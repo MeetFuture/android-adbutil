@@ -3,17 +3,21 @@ package com.tangqiang;
 import com.android.ddmlib.IDevice;
 import com.tangqiang.adb.AdbDevice;
 import com.tangqiang.monkey.MonkeyDevice;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
 /**
- * TODO
+ * 测试
  *
  * @author Tom
  * @version 1.0 2018-02-03 0003 Tom create
  * @date 2018-02-03 0003
  */
 public class Test {
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
     public static void main(String[] args) {
         Test th = new Test();
         th.execute();
@@ -22,17 +26,17 @@ public class Test {
     private void execute() {
         try {
             AdbBackend backend = new AdbBackend();
-            IDevice a = backend.getDevice();
+            IDevice device = backend.getDevice();
 
-            //AdbDevice adbDevice = new AdbDevice(a);
-            //String tap = adbDevice.tap(500, 600);
-            //System.out.println("Test.Tap :" + tap);
-            // executeFish(adbDevice);
+            AdbDevice adbDevice = new AdbDevice(device);
+            adbDevice.tap(500, 600);
+            adbDevice.takeSnapshot("/screenshot.png");
+            adbDevice.close();
 
-            MonkeyDevice monkeyDevice = new MonkeyDevice(a);
+            MonkeyDevice monkeyDevice = new MonkeyDevice(device);
             Collection<String> collections = monkeyDevice.listVariable();
             for (String s : collections) {
-                System.out.println("Variable :" + s);
+                logger.info("Variable :" + s);
             }
             Thread.sleep(1000);
 
@@ -47,16 +51,7 @@ public class Test {
         }
     }
 
-    private void executeFish(AdbDevice adbDevice) {
-        while (true) {
-            try {
-                Thread.sleep(1000);
-                adbDevice.tap(1600, 700);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
+
 
 
 }
