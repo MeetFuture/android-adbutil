@@ -1,0 +1,86 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.tangqiang</groupId>
+    <artifactId>my-android-adbutil</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
+
+    <name>my-android-adbutil</name>
+    <url>http://maven.apache.org</url>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+
+    <distributionManagement>
+        <repository>
+            <id>my_center</id>
+            <name>my_center</name>
+            <url>http://localhost:8081/nexus/content/repositories/releases/</url>
+        </repository>
+    </distributionManagement>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.android.ddmlib</groupId>
+            <artifactId>ddmlib</artifactId>
+            <version>r16</version>
+        </dependency>
+
+        <!--<dependency>-->
+        <!--<groupId>com.google.guava</groupId>-->
+        <!--<artifactId>guava</artifactId>-->
+        <!--<version>22.0</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+        <!--<groupId>net.sf.sociaal</groupId>-->
+        <!--<artifactId>chimpchat</artifactId>-->
+        <!--<version>22.6.3</version>-->
+        <!--</dependency>-->
+
+    </dependencies>
+</project>
