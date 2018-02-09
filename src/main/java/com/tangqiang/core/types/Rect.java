@@ -52,10 +52,10 @@ public class Rect {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Rect ");
+        sb.append("left: ").append(this.left).append(" ");
         sb.append("top: ").append(this.top).append(" ");
         sb.append("right: ").append(this.right).append(" ");
         sb.append("bottom: ").append(this.bottom).append(" ");
-        sb.append("left: ").append(this.left).append(" ");
         return sb.toString();
     }
 }

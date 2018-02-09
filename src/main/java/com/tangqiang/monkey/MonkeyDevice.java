@@ -3,7 +3,7 @@ package com.tangqiang.monkey;
 import com.android.ddmlib.IDevice;
 import com.tangqiang.core.CommandOutputReceiver;
 import com.tangqiang.core.IMonkeyDevice;
-import com.tangqiang.core.LinearInterpolator;
+import com.tangqiang.monkey.polator.LinearInterpolator;
 import com.tangqiang.core.LogOutputReceiver;
 import com.tangqiang.core.types.Point;
 import com.tangqiang.monkey.types.MonkeyButton;

@@ -1,6 +1,7 @@
-package com.tangqiang;
+package com.tangqiang.test;
 
 import com.android.ddmlib.IDevice;
+import com.tangqiang.AdbBackend;
 import com.tangqiang.adb.AdbDevice;
 import com.tangqiang.monkey.MonkeyDevice;
 import org.slf4j.Logger;
@@ -15,11 +16,11 @@ import java.util.Collection;
  * @version 1.0 2018-02-03 0003 Tom create
  * @date 2018-02-03 0003
  */
-public class Test {
+public class Test1 {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     public static void main(String[] args) {
-        Test th = new Test();
+        Test1 th = new Test1();
         th.execute();
     }
 

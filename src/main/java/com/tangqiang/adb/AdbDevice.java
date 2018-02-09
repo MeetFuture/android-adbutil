@@ -1,11 +1,13 @@
 package com.tangqiang.adb;
 
 import com.android.ddmlib.IDevice;
+import com.tangqiang.adb.event.GetEventReceiver;
 import com.tangqiang.adb.image.AdbImage;
 import com.tangqiang.adb.types.AdbShellButton;
 import com.tangqiang.core.CommandOutputReceiver;
 import com.tangqiang.core.IAdbDevice;
 import com.tangqiang.core.LogOutputReceiver;
+import com.tangqiang.core.types.Rect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +26,7 @@ public class AdbDevice implements IAdbDevice {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private IDevice device;
+    private int shellTimeout = 10000;
 
 
     public AdbDevice(IDevice device) {
@@ -94,14 +97,76 @@ public class AdbDevice implements IAdbDevice {
     }
 
     @Override
-    public boolean drag(int startx, int starty, int endx, int endy, long ms) {
-        String result = shell("input", "swipe", startx, starty, endx, endy, ms);
+    public boolean drag(int startX, int startY, int endX, int endY, long ms) {
+        String result = shell("input", "swipe", startX, startY, endX, endY, ms);
         return shellResult(result);
     }
 
     @Override
     public void dragAsync(int startx, int starty, int endx, int endy, long ms) {
         shellAsync("input", "swipe", startx, starty, endx, endy, ms);
+    }
+
+    @Override
+    public Rect getScreenPhysical() {
+        Rect rect = null;
+        try {
+            String result = shell("wm size");
+            if (shellResult(result)) {
+                String[] msg = result.trim().split(" |x");
+                int w = Integer.valueOf(msg[msg.length - 2]);
+                int h = Integer.valueOf(msg[msg.length - 1]);
+                rect = new Rect(0, 0, w, h);
+            }
+        } catch (Exception e) {
+            logger.error("ScreenPhysicalSize error !", e);
+        }
+        return rect;
+    }
+
+
+    @Override
+    public Rect getScreenVirtual() {
+        Rect rect = null;
+        try {
+            String result = shell("getevent -p | grep -e '0035' -e '0036'");
+            if (shellResult(result)) {
+                String[] msg = result.trim().split("0035|0036");
+
+                String[] XMsgArr = msg[1].split("min|max");//[1].split(",")[0];
+                String[] YMsgArr = msg[2].split("min|max");//[1].split(",")[0];
+                String xMinS = XMsgArr[1].split(",")[0].trim();
+                String xMaxS = XMsgArr[2].split(",")[0].trim();
+
+                String yMinS = YMsgArr[1].split(",")[0].trim();
+                String yMaxS = YMsgArr[2].split(",")[0].trim();
+
+                int xmin = Integer.valueOf(xMinS);
+                int xmax = Integer.valueOf(xMaxS);
+                int ymin = Integer.valueOf(yMinS);
+                int ymax = Integer.valueOf(yMaxS);
+
+                rect = new Rect(xmin, ymin, xmax, ymax);
+            }
+        } catch (Exception e) {
+            logger.error("ScreenVirtualSize error !", e);
+        }
+        return rect;
+    }
+
+    @Override
+    public void getEvent(GetEventReceiver receiver ) {
+        getEvent(receiver,Integer.MAX_VALUE);
+    }
+
+    @Override
+    public void getEvent(GetEventReceiver receiver, int timeout) {
+        String cmd = "getevent -t";
+        try {
+            device.executeShellCommand(cmd, receiver, timeout);
+        } catch (Exception e) {
+            logger.error("Error executing command: " + cmd, e);
+        }
     }
 
     @Override
@@ -152,13 +217,13 @@ public class AdbDevice implements IAdbDevice {
 
     @Override
     public String shell(String cmd) {
-        return shell(cmd, 5000);
+        return shell(cmd, shellTimeout);
     }
 
     @Override
     public String shell(Object... args) {
         String cmd = shellBuild(args);
-        return shell(cmd, 5000);
+        return shell(cmd, shellTimeout);
     }
 
     @Override

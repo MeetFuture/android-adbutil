@@ -1,6 +1,8 @@
 package com.tangqiang.core;
 
+import com.tangqiang.adb.event.GetEventReceiver;
 import com.tangqiang.adb.types.AdbShellButton;
+import com.tangqiang.core.types.Rect;
 
 /**
  * Adb device 接口
@@ -28,28 +30,49 @@ public interface IAdbDevice extends IMyDevice {
     /**
      * 拖拽
      */
-    boolean drag(int startx, int starty, int endx, int endy, long ms);
+    boolean drag(int startX, int startY, int endX, int endY, long ms);
 
     /**
      * 拖拽
      */
     void dragAsync(int startx, int starty, int endx, int endy, long ms);
 
+    /**
+     * 获取设备屏幕分辨率 adb sehll wm size
+     */
+    Rect getScreenPhysical();
 
     /**
-     * shell 执行
+     * 获取设备虚拟的屏幕分辨率 adb shell getevent -p | grep -e '0035' -e '0036'
+     */
+    Rect getScreenVirtual();
+
+    /**
+     * 获取设备事件
+     */
+    void getEvent(GetEventReceiver receiver);
+
+    /**
+     * 获取设备事件
+     *
+     * @param timeout 超时时间
+     */
+    void getEvent(GetEventReceiver receiver, int timeout);
+
+    /**
+     * 执行shell
      */
     String shell(Object... args);
 
     String shell(String cmd);
 
     /**
-     * shell 执行
+     * 执行shell
      */
     String shell(String cmd, long timeout);
 
     /**
-     * shell 执行 异步
+     * 执行shell  异步
      */
     void shellAsync(Object... args);
 
