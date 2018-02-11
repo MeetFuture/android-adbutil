@@ -21,6 +21,7 @@ public abstract class GetEventReceiver implements IShellOutputReceiver {
 
 
     public void addOutput(byte[] data, int offset, int length) {
+        long time = System.nanoTime();
         String message = new String(data, offset, length);
         String[] mes = message.split("\n");
         for (int i = 0; i < mes.length; ++i) {
@@ -29,6 +30,7 @@ public abstract class GetEventReceiver implements IShellOutputReceiver {
                 list.add(item);
                 if (item.type == EventItem.Type.SYN && item.code == 0 && item.value == 0) {
                     RawInputEvent event = RawInputEvent.from(list);
+                    event.time = time;
                     log.debug("GetEventReceiver " + event);
                     processNewEvent(event);
                     list = new ArrayList<>(6);

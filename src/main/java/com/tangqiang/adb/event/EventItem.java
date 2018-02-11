@@ -1,7 +1,7 @@
 package com.tangqiang.adb.event;
 
 /**
- * TODO
+ * 执行 adb shell getevent -t 接收到的一行的数据的解析
  *
  * @author Tom
  * @version 1.0 2018-02-09 0009 Tom create
@@ -14,11 +14,26 @@ public class EventItem {
      * 事件发生时间的秒数
      **/
     public long secTime;
-    public long msTime;//	事件发生时间的微妙数
-    public String deviceId;//android设备事件输入文件名
-    public Type type;    //事件类型码
-    public int code;//扫描码或键值
-    public int value;//值
+    /**
+     * 事件发生时间的微秒数
+     */
+    public long msTime;//
+    /**
+     * android设备事件输入文件名
+     */
+    public String deviceId;
+    /**
+     * 事件类型码
+     */
+    public Type type;
+    /**
+     * 扫描码或键值
+     */
+    public int code;
+    /**
+     * 值
+     */
+    public int value;
 
     private EventItem(long secTime, long msTime, String deviceId, Type type, int code, int value) {
         this.secTime = secTime;
@@ -43,7 +58,7 @@ public class EventItem {
                 return new EventItem(secTime, msTime, deviceId, en, code, value);
             }
         } catch (Exception e) {
-            System.out.println("EventItem.from :" + e.getMessage());
+            System.out.println("EventItem.from Error :" + e.getMessage());
         }
         return null;
     }

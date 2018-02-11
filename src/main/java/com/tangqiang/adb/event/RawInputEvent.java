@@ -2,14 +2,44 @@ package com.tangqiang.adb.event;
 
 import java.util.List;
 
+/**
+ * 执行 adb shell getevent -t 接收到的一个事件的数据的解析
+ *
+ * @author Tom
+ * @version 1.0 2018-02-11 0011 Tom create
+ * @date 2018-02-11 0011
+ * @copyright Copyright © 2017 Grgbanking All rights reserved.
+ */
 public class RawInputEvent {
 
-    public long when;//	事件发生时间的毫秒数
-    public Type type;// 事件类型码
-    public int keyCode;//键值
-    public int value;//	值
-    public int x;//X坐标值
-    public int y;//Y坐标值
+    /**
+     * 事件发生时的 设备的微秒数
+     **/
+    public long when;
+    /**
+     * 事件接收时的系统的纳秒数
+     */
+    public long time;
+    /**
+     * 事件类型码
+     */
+    public Type type;
+    /**
+     * 键值
+     */
+    public int keyCode;
+    /**
+     * 值
+     */
+    public int value;
+    /**
+     * X坐标值
+     */
+    public int x;
+    /**
+     * Y坐标值
+     */
+    public int y;
 
     private RawInputEvent(long when, Type type, int keyCode, int x, int y) {
         this.when = when;
