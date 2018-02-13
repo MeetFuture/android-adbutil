@@ -1,4 +1,4 @@
-## my-android-adbutil
+## android-adbutil
 
 Android adb工具拓展
 
