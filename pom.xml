@@ -42,8 +42,8 @@
     <distributionManagement>
         <repository>
             <id>my_center</id>
-            <name>my_center</name>
-            <url>http://localhost:8081/nexus/content/repositories/releases/</url>
+            <name>my Release</name>
+            <url>${ReleaseRepository}</url>
         </repository>
     </distributionManagement>
 
