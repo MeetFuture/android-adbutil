@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.tangqiang</groupId>
-    <artifactId>my-android-adbutil</artifactId>
+    <artifactId>android-adbutil</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>my-android-adbutil</name>
+    <name>android-adbutil</name>
     <url>http://maven.apache.org</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
