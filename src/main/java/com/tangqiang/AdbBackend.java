@@ -27,8 +27,8 @@ public class AdbBackend {
         this((String) null, false);
     }
 
-    public AdbBackend(String adbLocation, boolean noInitAdb) {
-        this.initAdb = !noInitAdb;
+    public AdbBackend(String adbLocation, boolean initAdb) {
+        this.initAdb = initAdb;
         if (adbLocation == null) {
             adbLocation = this.findAdb();
         }
@@ -38,7 +38,7 @@ public class AdbBackend {
         }
 
         this.bridge = AndroidDebugBridge.createBridge(adbLocation, true);
-        logger.info("adbLocation:" + adbLocation + "  noInitAdb:" + noInitAdb + "  bridge:" + bridge);
+        logger.info("adbLocation:" + adbLocation + "  initAdb:" + initAdb + "  bridge:" + bridge);
     }
 
     private String findAdb() {
