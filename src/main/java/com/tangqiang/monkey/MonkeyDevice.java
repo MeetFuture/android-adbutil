@@ -3,9 +3,9 @@ package com.tangqiang.monkey;
 import com.android.ddmlib.IDevice;
 import com.tangqiang.core.CommandOutputReceiver;
 import com.tangqiang.core.IMonkeyDevice;
-import com.tangqiang.monkey.polator.LinearInterpolator;
 import com.tangqiang.core.LogOutputReceiver;
 import com.tangqiang.core.types.Point;
+import com.tangqiang.monkey.polator.LinearInterpolator;
 import com.tangqiang.monkey.types.MonkeyButton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ import java.util.concurrent.Executors;
  */
 public class MonkeyDevice implements IMonkeyDevice {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final ExecutorService executor = Executors.newFixedThreadPool(10);
     private IDevice device;
     private int localPort = 5559;
     private Socket monkeySocket;
@@ -107,15 +107,13 @@ public class MonkeyDevice implements IMonkeyDevice {
 
 
     private void shellAsync(String cmd, long timeout) {
-        executor.submit(new Runnable() {
-            public void run() {
-                try {
-                    logger.debug("shell Async execute[" + cmd + "]  timeout:" + timeout);
-                    LogOutputReceiver outputReceiver = new LogOutputReceiver();
-                    device.executeShellCommand(cmd, outputReceiver, (int) timeout);
-                } catch (Exception e) {
-                    logger.warn("Execute command[" + cmd + "]" + " Error:" + e.getMessage());
-                }
+        executor.submit(() -> {
+            try {
+                logger.debug("shell Async execute[" + cmd + "]  timeout:" + timeout);
+                LogOutputReceiver outputReceiver = new LogOutputReceiver();
+                device.executeShellCommand(cmd, outputReceiver, (int) timeout);
+            } catch (Exception e) {
+                logger.warn("Execute command[" + cmd + "]" + " Error:" + e.getMessage());
             }
         });
     }
