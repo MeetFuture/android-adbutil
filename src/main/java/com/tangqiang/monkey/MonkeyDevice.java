@@ -5,7 +5,7 @@ import com.tangqiang.core.CommandOutputReceiver;
 import com.tangqiang.core.IMonkeyDevice;
 import com.tangqiang.core.LogOutputReceiver;
 import com.tangqiang.core.types.Point;
-import com.tangqiang.monkey.polator.Angle60Interpolator;
+import com.tangqiang.monkey.polator.AngleInterpolator;
 import com.tangqiang.monkey.polator.LinearInterpolator;
 import com.tangqiang.monkey.types.MonkeyButton;
 import org.slf4j.Logger;
@@ -264,17 +264,23 @@ public class MonkeyDevice implements IMonkeyDevice {
 
 
     @Override
-    public boolean dragAngle60(int startx, int starty, int endx, int endy) {
-        return dragAngle60(startx, starty, endx, endy, (long) (endx - startx) * 10);
+    public boolean dragAngle(int startx, int starty, int endx, int endy) {
+        return dragAngle(startx, starty, endx, endy, 30.0, (long) (endx - startx) * 10);
+    }
+
+
+    @Override
+    public boolean dragAngle(int startx, int starty, int endx, int endy, double angle) {
+        return dragAngle(startx, starty, endx, endy, angle, (long) (endx - startx) * 10);
     }
 
     @Override
-    public boolean dragAngle60(int startx, int starty, int endx, int endy,  long ms) {
+    public boolean dragAngle(int startx, int starty, int endx, int endy, double angle, long ms) {
         final long iterationTime = ms / (long) (endx - startx);
-        Angle60Interpolator interpolator = new Angle60Interpolator();
+        AngleInterpolator interpolator = new AngleInterpolator(angle);
         Point start = new Point(startx, starty);
         Point end = new Point(endx, endy);
-        interpolator.interpolate(start, end, new Angle60Interpolator.Callback() {
+        interpolator.interpolate(start, end, new AngleInterpolator.Callback() {
             public void start(Point point) {
                 try {
                     sendCommand("touch down " + point.getX() + " " + point.getY());

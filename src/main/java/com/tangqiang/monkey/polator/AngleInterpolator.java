@@ -6,17 +6,21 @@ package com.tangqiang.monkey.polator;
 
 import com.tangqiang.core.types.Point;
 
+import java.util.Random;
+
 /**
- * 60度圆弧
+ * 圆弧,注意：点之间有抖动
  *
  * @author Tom
  * @version 1.0 2018-01-04 0004 Tom create
  * @date 2018-01-04 0004
  */
-public class Angle60Interpolator {
+public class AngleInterpolator {
+    private double angle;
+    private Random random = new Random();
 
-    private static float lerp(float start, float stop, float amount) {
-        return start + (stop - start) * amount;
+    public AngleInterpolator(double angle) {
+        this.angle = angle;
     }
 
 
@@ -25,19 +29,26 @@ public class Angle60Interpolator {
             throw new RuntimeException("开始和结束点不符合要求！！！");
         }
         callback.start(start);
-        double dRadius = Math.sqrt((start.getX() - end.getX()) * (start.getX() - end.getX()) + (start.getY() - end.getY()) * (start.getY() - end.getY()));
+        double dRadius = circleRadius(start, end);
         double[] doubles = circleCenter(start, end, dRadius);
         double centerx = doubles[0];
         double centery = doubles[1];
 
-        for (int i = start.getX(); i < end.getX(); ++i) {
+        for (int i = start.getX(); i < end.getX(); ) {
+            i = i + random.nextInt(8) + 3;
             double[] pointY = pointY(centerx, centery, dRadius, i);
-            callback.step(new Point(Math.round(i), (int) Math.round(pointY[0])));
+            int randomY = random.nextInt(6);
+            callback.step(new Point(Math.round(i), (int) Math.round(pointY[0] + randomY)));
         }
 
         callback.end(end);
     }
 
+    private double circleRadius(Point p1, Point p2) {
+        double diff = Math.sqrt((p1.getX() - p2.getX()) * (p1.getX() - p2.getX()) + (p1.getY() - p2.getY()) * (p1.getY() - p2.getY())) / 2;
+        double radians = angle / 180 * Math.PI;
+        return diff / Math.sin(radians);
+    }
 
     private double[] pointY(double centerx, double centery, double dRadius, double x) {
         double tmp = Math.sqrt(dRadius * dRadius - (x - centerx) * (x - centerx));
