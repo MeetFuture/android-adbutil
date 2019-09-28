@@ -5,6 +5,7 @@ import com.tangqiang.core.CommandOutputReceiver;
 import com.tangqiang.core.IMonkeyDevice;
 import com.tangqiang.core.LogOutputReceiver;
 import com.tangqiang.core.types.Point;
+import com.tangqiang.monkey.polator.Angle60Interpolator;
 import com.tangqiang.monkey.polator.LinearInterpolator;
 import com.tangqiang.monkey.types.MonkeyButton;
 import org.slf4j.Logger;
@@ -230,6 +231,50 @@ public class MonkeyDevice implements IMonkeyDevice {
         Point start = new Point(startx, starty);
         Point end = new Point(endx, endy);
         lerp.interpolate(start, end, new LinearInterpolator.Callback() {
+            public void start(Point point) {
+                try {
+                    sendCommand("touch down " + point.getX() + " " + point.getY());
+                    sendCommand("touch move " + point.getX() + " " + point.getY());
+                    Thread.sleep(iterationTime);
+                } catch (Exception e) {
+                    logger.error("Error sending drag start event", e);
+                }
+            }
+
+            public void step(Point point) {
+                try {
+                    sendCommand("touch move " + point.getX() + " " + point.getY());
+                    Thread.sleep(iterationTime);
+                } catch (Exception e) {
+                    logger.error("Error sending drag start event", e);
+                }
+            }
+
+            public void end(Point point) {
+                try {
+                    sendCommand("touch move " + point.getX() + " " + point.getY());
+                    sendCommand("touch up " + point.getX() + " " + point.getY());
+                } catch (Exception e) {
+                    logger.error("Error sending drag end event", e);
+                }
+            }
+        });
+        return true;
+    }
+
+
+    @Override
+    public boolean dragAngle60(int startx, int starty, int endx, int endy) {
+        return dragAngle60(startx, starty, endx, endy, (long) (endx - startx) * 10);
+    }
+
+    @Override
+    public boolean dragAngle60(int startx, int starty, int endx, int endy,  long ms) {
+        final long iterationTime = ms / (long) (endx - startx);
+        Angle60Interpolator interpolator = new Angle60Interpolator();
+        Point start = new Point(startx, starty);
+        Point end = new Point(endx, endy);
+        interpolator.interpolate(start, end, new Angle60Interpolator.Callback() {
             public void start(Point point) {
                 try {
                     sendCommand("touch down " + point.getX() + " " + point.getY());

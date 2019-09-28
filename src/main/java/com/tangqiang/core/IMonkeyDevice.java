@@ -19,7 +19,7 @@ public interface IMonkeyDevice extends IMyDevice {
     /**
      * 按键
      */
-    boolean press(MonkeyButton button, long  pressTime);
+    boolean press(MonkeyButton button, long pressTime);
 
     void pressAsync(MonkeyButton button);
 
@@ -33,10 +33,15 @@ public interface IMonkeyDevice extends IMyDevice {
      */
     boolean drag(int startx, int starty, int endx, int endy, int step, long ms);
 
+    boolean dragAngle60(int startx, int starty, int endx, int endy);
+
+    boolean dragAngle60(int startx, int starty, int endx, int endy, long ms);
+
     /**
      * 拖拽
      */
     void dragAsync(int startx, int starty, int endx, int endy, long ms);
+
     void dragAsync(int startx, int starty, int endx, int endy, int step, long ms);
 
 
