@@ -1,7 +1,6 @@
 package com.tangqiang.monkey;
 
 import com.android.ddmlib.IDevice;
-import com.tangqiang.core.CommandOutputReceiver;
 import com.tangqiang.core.IMonkeyDevice;
 import com.tangqiang.core.LogOutputReceiver;
 import com.tangqiang.core.types.Point;
@@ -16,6 +15,7 @@ import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Monkey
@@ -84,13 +84,10 @@ public class MonkeyDevice implements IMonkeyDevice {
     private Socket createForwardSocket(IDevice device, int port) {
         Socket monkeySocket = null;
         try {
-            String monkeyShow = "ps | grep 'com.android.commands.monkey'";
-            CommandOutputReceiver receiver = new CommandOutputReceiver();
-            device.executeShellCommand(monkeyShow, receiver, 5000);
-            String monkeyMsg = receiver.toString().trim();
-            if (monkeyMsg.length() > 0) {
-                logger.warn("Monkey already run:" + monkeyMsg);
-            }
+            //"ps -ef | grep 'com.android.commands.monkey'";
+            String monkeyKill = "pkill -f com.android.commands.monkey";
+            LogOutputReceiver receiver = new LogOutputReceiver();
+            device.executeShellCommand(monkeyKill, receiver, 1, TimeUnit.SECONDS);
 
             String command = "monkey --port " + port;
             logger.info("Start monkey on device :" + command);
@@ -327,14 +324,7 @@ public class MonkeyDevice implements IMonkeyDevice {
         });
     }
 
-    @Override
-    public void reboot(String into) {
-        try {
-            device.reboot(into);
-        } catch (Exception e) {
-            logger.error("Unable to reboot device", e);
-        }
-    }
+
 
     @Override
     public boolean wake() {

@@ -155,8 +155,8 @@ public class AdbDevice implements IAdbDevice {
     }
 
     @Override
-    public void getEvent(GetEventReceiver receiver ) {
-        getEvent(receiver,Integer.MAX_VALUE);
+    public void getEvent(GetEventReceiver receiver) {
+        getEvent(receiver, Integer.MAX_VALUE);
     }
 
     @Override
@@ -169,15 +169,6 @@ public class AdbDevice implements IAdbDevice {
         }
     }
 
-    @Override
-    public void reboot(String into) {
-        try {
-            logger.debug("reboot.......... ");
-            device.reboot(into);
-        } catch (Exception e) {
-            logger.error("Unable to reboot device", e);
-        }
-    }
 
     @Override
     public boolean wake() {

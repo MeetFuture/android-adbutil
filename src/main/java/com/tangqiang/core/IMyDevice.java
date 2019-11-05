@@ -44,12 +44,6 @@ public interface IMyDevice {
      */
     void touchAsync(int x, int y, long ms);
 
-
-    /**
-     * 重启
-     */
-    void reboot(String into);
-
     /**
      * 唤醒
      */
