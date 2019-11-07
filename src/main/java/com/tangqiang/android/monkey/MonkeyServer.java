@@ -52,6 +52,7 @@ public class MonkeyServer {
             while (!outputReceiver.contains() && (System.currentTimeMillis() - 10000 < beginTime)) {
                 Thread.sleep(10);
             }
+            Thread.sleep(1000);
 
             // 端口转发
             logger.info("Monkey createForward  PORT:" + port);

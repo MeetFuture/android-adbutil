@@ -27,7 +27,7 @@ public class MonkeyClient {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ExecutorService executor = Executors.newFixedThreadPool(10);
     private int port = 5559;
-    private String host;
+    private String host = "127.0.0.1";
     private Socket monkeySocket;
     private BufferedWriter monkeyWriter;
     private BufferedReader monkeyReader;
@@ -154,8 +154,8 @@ public class MonkeyClient {
             @Override
             public void start(Point point) {
                 try {
-                    sendCommand("touch down " + point.getX() + " " + point.getY());
-                    sendCommand("touch move " + point.getX() + " " + point.getY());
+                    sendCommand("touch down " + (int) point.getX() + " " + (int) point.getY());
+                    sendCommand("touch move " + (int) point.getX() + " " + (int) point.getY());
                     Thread.sleep(iterationTime);
                 } catch (Exception e) {
                     logger.error("Error sending drag start event", e);
@@ -165,7 +165,7 @@ public class MonkeyClient {
             @Override
             public void step(Point point) {
                 try {
-                    sendCommand("touch move " + point.getX() + " " + point.getY());
+                    sendCommand("touch move " + (int) point.getX() + " " + (int) point.getY());
                     Thread.sleep(iterationTime);
                 } catch (Exception e) {
                     logger.error("Error sending drag step event", e);
@@ -175,8 +175,8 @@ public class MonkeyClient {
             @Override
             public void end(Point point) {
                 try {
-                    sendCommand("touch move " + point.getX() + " " + point.getY());
-                    sendCommand("touch up " + point.getX() + " " + point.getY());
+                    sendCommand("touch move " + (int) point.getX() + " " + (int) point.getY());
+                    sendCommand("touch up " + (int) point.getX() + " " + (int) point.getY());
                 } catch (Exception e) {
                     logger.error("Error sending drag end event", e);
                 }
@@ -204,8 +204,8 @@ public class MonkeyClient {
             @Override
             public void start(Point point) {
                 try {
-                    sendCommand("touch down " + point.getX() + " " + point.getY());
-                    sendCommand("touch move " + point.getX() + " " + point.getY());
+                    sendCommand("touch down " + (int) point.getX() + " " + (int) point.getY());
+                    sendCommand("touch move " + (int) point.getX() + " " + (int) point.getY());
                     Thread.sleep(iterationTime);
                 } catch (Exception e) {
                     logger.error("Error sending drag start event", e);
@@ -215,7 +215,7 @@ public class MonkeyClient {
             @Override
             public void step(Point point) {
                 try {
-                    sendCommand("touch move " + point.getX() + " " + point.getY());
+                    sendCommand("touch move " + (int) point.getX() + " " + (int) point.getY());
                     Thread.sleep(iterationTime);
                 } catch (Exception e) {
                     logger.error("Error sending drag start event", e);
@@ -225,8 +225,8 @@ public class MonkeyClient {
             @Override
             public void end(Point point) {
                 try {
-                    sendCommand("touch move " + point.getX() + " " + point.getY());
-                    sendCommand("touch up " + point.getX() + " " + point.getY());
+                    sendCommand("touch move " + (int) point.getX() + " " + (int) point.getY());
+                    sendCommand("touch up " + (int) point.getX() + " " + (int) point.getY());
                 } catch (Exception e) {
                     logger.error("Error sending drag end event", e);
                 }

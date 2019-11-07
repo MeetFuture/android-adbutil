@@ -27,7 +27,7 @@ public class MonkeyTest {
         client.start();
 
         Thread.sleep(1000);
-        client.tap(400, 400);
+        client.touch(400, 400, 400);
         Thread.sleep(1000);
         client.stop();
         monkeyServer.stop();
