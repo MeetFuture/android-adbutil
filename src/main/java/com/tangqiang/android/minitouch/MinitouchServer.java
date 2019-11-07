@@ -6,7 +6,6 @@ import com.tangqiang.android.common.receiver.LogOutputReceiver;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 import java.io.InputStream;
@@ -51,11 +50,11 @@ public class MinitouchServer {
             logger.info("Android abi:" + abi + "   sdk:" + sdk);
 
             // 复制文件到临时目录
-            ClassPathResource resourceBin = new ClassPathResource("minitouch" + File.separator + abi + File.separator + "minitouch");
+            String binPath = "/minitouch/" + abi + "/minitouch";
+            logger.info("extract bin :" + binPath);
+            InputStream resourceBin = MinitouchServer.class.getResourceAsStream(binPath);
             File minitouchBinFile = File.createTempFile("minitouch", "bin");
-            try (InputStream inputStream = resourceBin.getInputStream()) {
-                FileUtils.copyInputStreamToFile(inputStream, minitouchBinFile);
-            }
+            FileUtils.copyInputStreamToFile(resourceBin, minitouchBinFile);
 
             LogOutputReceiver ignorReceiver = new LogOutputReceiver();
             iDevice.executeShellCommand("mkdir " + REMOTE_PATH, ignorReceiver, 1, TimeUnit.SECONDS);

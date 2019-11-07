@@ -18,7 +18,7 @@ public class LogOutputReceiver implements IShellOutputReceiver {
 
         for (int i = 0; i < mes.length; ++i) {
             String line = mes[i];
-            this.log.info(line);
+            this.log.debug(line);
         }
     }
 

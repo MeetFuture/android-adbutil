@@ -7,7 +7,6 @@ import com.tangqiang.android.common.receiver.LogOutputReceiver;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 import java.io.InputStream;
@@ -52,17 +51,17 @@ public class MinicapServer {
             logger.info("Android abi:" + abi + "   sdk:" + sdk);
 
             // 复制文件到临时目录
-            ClassPathResource resourceBin = new ClassPathResource("minicap" + File.separator + "bin" + File.separator + abi + File.separator + "minicap");
+            String binPath = "/minicap/bin/" + abi + "/minicap";
+            logger.info("extract bin :" + binPath);
+            InputStream resourceBin = MinicapServer.class.getResourceAsStream(binPath);
             File minicapBinFile = File.createTempFile("minicap", "bin");
-            try (InputStream inputStream = resourceBin.getInputStream()) {
-                FileUtils.copyInputStreamToFile(inputStream, minicapBinFile);
-            }
+            FileUtils.copyInputStreamToFile(resourceBin, minicapBinFile);
 
-            ClassPathResource resourceSo = new ClassPathResource("minicap" + File.separator + "shared" + File.separator + "android-" + sdk + File.separator + abi + File.separator + "minicap.so");
+            String soPath = "/minicap/shared/android-" + sdk + "/" + abi + "/minicap.so";
+            logger.info("extract so :" + soPath);
+            InputStream resourceSo = MinicapServer.class.getResourceAsStream(soPath);
             File minicapSoFile = File.createTempFile("minicap", "so");
-            try (InputStream inputStream = resourceSo.getInputStream()) {
-                FileUtils.copyInputStreamToFile(inputStream, minicapSoFile);
-            }
+            FileUtils.copyInputStreamToFile(resourceSo, minicapSoFile);
 
             LogOutputReceiver ignorReceiver = new LogOutputReceiver();
             iDevice.executeShellCommand("mkdir " + REMOTE_PATH, ignorReceiver, 1, TimeUnit.SECONDS);

@@ -32,7 +32,7 @@ public class ContainsOutputReceiver implements IShellOutputReceiver {
         for (int i = 0; i < mes.length; ++i) {
             String line = mes[i];
             contains = contains || line.contains(key);
-            this.log.info(line);
+            this.log.debug(line);
         }
     }
 
