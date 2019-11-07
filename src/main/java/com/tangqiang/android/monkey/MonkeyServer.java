@@ -2,6 +2,7 @@ package com.tangqiang.android.monkey;
 
 
 import com.android.ddmlib.IDevice;
+import com.tangqiang.android.common.receiver.ContainsOutputReceiver;
 import com.tangqiang.android.common.receiver.LogOutputReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,10 +44,15 @@ public class MonkeyServer {
             // 启动 minitouch 服务
             String startCommand = MONKEY_START_COMMAND + port + " " + (extStartCmd != null ? extStartCmd : "");
             logger.info("Begin init MonkeyServer , startCommand:" + startCommand);
-            monkeyService = new MonkeyService(startCommand);
+            ContainsOutputReceiver outputReceiver = new ContainsOutputReceiver("mCurArgData");
+            monkeyService = new MonkeyService(startCommand, outputReceiver);
             monkeyService.start();
 
-            Thread.sleep(2000);
+            long beginTime = System.currentTimeMillis();
+            while (!outputReceiver.contains() && (System.currentTimeMillis() - 10000 < beginTime)) {
+                Thread.sleep(10);
+            }
+
             // 端口转发
             logger.info("Monkey createForward  PORT:" + port);
             iDevice.createForward(port, port);
@@ -61,7 +67,6 @@ public class MonkeyServer {
             LogOutputReceiver receiver = new LogOutputReceiver();
             logger.info("Stop monkey service : " + MONKEY_STOP_COMMAND);
             iDevice.executeShellCommand(MONKEY_STOP_COMMAND, receiver, 1, TimeUnit.SECONDS);
-
             this.monkeyService.interrupt();
         } catch (Exception e) {
             logger.error("Server close error !", e);
@@ -73,22 +78,23 @@ public class MonkeyServer {
      */
     private class MonkeyService extends Thread {
         private String startCommand;
+        private ContainsOutputReceiver outputReceiver;
 
-        private MonkeyService(String startCommand) {
+        private MonkeyService(String startCommand, ContainsOutputReceiver outputReceiver) {
             this.startCommand = startCommand;
+            this.outputReceiver = outputReceiver;
         }
 
         @Override
         public void run() {
             try {
                 //"ps -ef | grep 'com.android.commands.monkey'";
-                LogOutputReceiver receiver = new LogOutputReceiver();
-                logger.info("Stop monkey service : " + MONKEY_STOP_COMMAND);
-                iDevice.executeShellCommand(MONKEY_STOP_COMMAND, receiver, 1, TimeUnit.SECONDS);
 
-                LogOutputReceiver logOutputReceiver = new LogOutputReceiver();
+                logger.info("Stop monkey service : " + MONKEY_STOP_COMMAND);
+                iDevice.executeShellCommand(MONKEY_STOP_COMMAND, outputReceiver, 1, TimeUnit.SECONDS);
+
                 logger.info("Start monkey service : " + startCommand);
-                iDevice.executeShellCommand(startCommand, logOutputReceiver, 0, TimeUnit.SECONDS);
+                iDevice.executeShellCommand(startCommand, outputReceiver, 0, TimeUnit.SECONDS);
             } catch (Exception e) {
                 logger.error("Monkey service error! " + e.getMessage());
             }

@@ -58,17 +58,17 @@ public class MinicapClient {
         try {
             this.socket.shutdownInput();
         } catch (Exception e) {
-            logger.error("client close error !", e);
+            logger.error("client close error !" + e.getMessage());
         }
         try {
             this.socket.shutdownOutput();
         } catch (Exception e) {
-            logger.error("client close error !", e);
+            logger.error("client close error !" + e.getMessage());
         }
         try {
             this.socket.close();
         } catch (Exception e) {
-            logger.error("client close error !", e);
+            logger.error("client close error !" + e.getMessage());
         }
     }
 

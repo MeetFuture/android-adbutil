@@ -324,25 +324,25 @@ public class MonkeyClient {
         try {
             executor.shutdown();
         } catch (Exception e) {
-            logger.error("Close monkey error !", e);
+            logger.error("Close monkey error !" + e.getMessage());
         }
         try {
             this.sendCommand("quit");
             this.monkeyWriter.close();
             this.monkeySocket.shutdownOutput();
         } catch (Exception e) {
-            logger.error("client close error !", e);
+            logger.error("client close error !" + e.getMessage());
         }
         try {
             this.monkeyReader.close();
             this.monkeySocket.shutdownInput();
         } catch (Exception e) {
-            logger.error("client close error !", e);
+            logger.error("client close error !" + e.getMessage());
         }
         try {
             this.monkeySocket.close();
         } catch (Exception e) {
-            logger.error("client close error !", e);
+            logger.error("client close error !" + e.getMessage());
         }
     }
 

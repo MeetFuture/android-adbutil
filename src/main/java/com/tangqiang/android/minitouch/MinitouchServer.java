@@ -1,6 +1,7 @@
 package com.tangqiang.android.minitouch;
 
 import com.android.ddmlib.IDevice;
+import com.tangqiang.android.common.receiver.ContainsOutputReceiver;
 import com.tangqiang.android.common.receiver.LogOutputReceiver;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -70,13 +71,18 @@ public class MinitouchServer {
 
             // 启动 minitouch 服务
             String startCommand = MINITOUCH_START_COMMAND;
-            minitouchService = new MinitouchService(startCommand);
+            ContainsOutputReceiver outputReceiver = new ContainsOutputReceiver("contacts");
+            minitouchService = new MinitouchService(startCommand, outputReceiver);
             minitouchService.start();
 
-            Thread.sleep(1000);
+            long beginTime = System.currentTimeMillis();
+            while (!outputReceiver.contains() && (System.currentTimeMillis() - 10000 < beginTime)) {
+                Thread.sleep(10);
+            }
+
             // 端口转发
+            logger.info("Minitouch createForward port:" + port);
             iDevice.createForward(port, "minitouch", IDevice.DeviceUnixSocketNamespace.ABSTRACT);
-            logger.info("Minitouch createForward  PORT:" + port);
         } catch (Exception e) {
             logger.error("Minitouch Server error ! ", e);
         }
@@ -96,17 +102,18 @@ public class MinitouchServer {
      */
     private class MinitouchService extends Thread {
         private String startCommand;
+        private ContainsOutputReceiver outputReceiver;
 
-        private MinitouchService(String startCommand) {
+        private MinitouchService(String startCommand, ContainsOutputReceiver outputReceiver) {
             this.startCommand = startCommand;
+            this.outputReceiver = outputReceiver;
         }
 
         @Override
         public void run() {
             try {
-                LogOutputReceiver logOutputReceiver = new LogOutputReceiver();
                 logger.info("Start minitouch service : " + startCommand);
-                iDevice.executeShellCommand(startCommand, logOutputReceiver, 0, TimeUnit.SECONDS);
+                iDevice.executeShellCommand(startCommand, outputReceiver, 0, TimeUnit.SECONDS);
             } catch (Exception e) {
                 logger.error("Minitouch service error!" + e.getMessage());
             }

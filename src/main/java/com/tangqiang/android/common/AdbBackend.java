@@ -44,12 +44,15 @@ public class AdbBackend {
                 if (device != null && device.length > 0) {
                     return device;
                 }
-
-                Thread.sleep(CONNECTION_ITERATION_TIMEOUT_MS);
-                timeoutMs -= CONNECTION_ITERATION_TIMEOUT_MS;
             } catch (Exception e) {
                 this.logger.error("Error getDevices", e);
             }
+
+            try {
+                Thread.sleep(CONNECTION_ITERATION_TIMEOUT_MS);
+            } catch (Exception e) {
+            }
+            timeoutMs -= CONNECTION_ITERATION_TIMEOUT_MS;
         }
         return null;
     }

@@ -55,17 +55,17 @@ public class MinitouchClient {
         try {
             this.socket.shutdownInput();
         } catch (Exception e) {
-            logger.error("client close error !", e);
+            logger.error("client close error !" + e.getMessage());
         }
         try {
             this.socket.shutdownOutput();
         } catch (Exception e) {
-            logger.error("client close error !", e);
+            logger.error("client close error !" + e.getMessage());
         }
         try {
             this.socket.close();
         } catch (Exception e) {
-            logger.error("client close error !", e);
+            logger.error("client close error !" + e.getMessage());
         }
     }
 
@@ -251,7 +251,7 @@ public class MinitouchClient {
                     logger.info("DataCollector receive data:" + line);
                 }
             } catch (Exception e) {
-                logger.error("Collector data error !" + e.getMessage(), e);
+                logger.error("Collector data error !" + e.getMessage());
             }
             logger.debug("Collector data Stop -------------------------");
         }

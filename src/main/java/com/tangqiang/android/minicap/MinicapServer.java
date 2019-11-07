@@ -2,6 +2,7 @@ package com.tangqiang.android.minicap;
 
 import com.android.ddmlib.IDevice;
 import com.tangqiang.android.common.receiver.CommandOutputReceiver;
+import com.tangqiang.android.common.receiver.ContainsOutputReceiver;
 import com.tangqiang.android.common.receiver.LogOutputReceiver;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -43,7 +44,7 @@ public class MinicapServer {
         this.MINICAP_START_COMMAND += extStartCmd;
     }
 
-    public void start() {
+    public boolean start() {
         try {
             logger.info("Begin init MinicapServer ......");
             String abi = iDevice.getProperty(ABI_COMMAND);
@@ -85,24 +86,33 @@ public class MinicapServer {
 
             // 启动minicap服务
             String startCommand = String.format(MINICAP_START_COMMAND, size, size);
-            minicapService = new MinicapService(startCommand);
+            ContainsOutputReceiver outputReceiver = new ContainsOutputReceiver("JpgEncoder");
+            minicapService = new MinicapService(startCommand, outputReceiver);
             minicapService.start();
 
-            Thread.sleep(1000);
+            long beginTime = System.currentTimeMillis();
+            while (!outputReceiver.contains() && (System.currentTimeMillis() - 10000 < beginTime)) {
+                Thread.sleep(10);
+            }
+
             // 端口转发
+            logger.info("Minicap createForward port:" + port);
             iDevice.createForward(port, "minicap", IDevice.DeviceUnixSocketNamespace.ABSTRACT);
-            logger.info("Minicap createForward  PORT:" + port);
+            return true;
         } catch (Exception e) {
             logger.error("Minicap Server error ! ", e);
         }
+        return false;
     }
 
 
-    public void stop() {
+    public boolean stop() {
         try {
             this.minicapService.interrupt();
+            return true;
         } catch (Exception e) {
             logger.error("Server close error !", e);
+            return false;
         }
     }
 
@@ -111,17 +121,18 @@ public class MinicapServer {
      */
     private class MinicapService extends Thread {
         private String startCommand;
+        private ContainsOutputReceiver outputReceiver;
 
-        private MinicapService(String startCommand) {
+        private MinicapService(String startCommand, ContainsOutputReceiver outputReceiver) {
             this.startCommand = startCommand;
+            this.outputReceiver = outputReceiver;
         }
 
         @Override
         public void run() {
             try {
-                LogOutputReceiver logOutputReceiver = new LogOutputReceiver();
                 logger.info("Start minicap service : " + startCommand);
-                iDevice.executeShellCommand(startCommand, logOutputReceiver, 0, TimeUnit.SECONDS);
+                iDevice.executeShellCommand(startCommand, outputReceiver, 0, TimeUnit.SECONDS);
             } catch (Exception e) {
                 logger.error("Minicap service error! " + e.getMessage());
             }
