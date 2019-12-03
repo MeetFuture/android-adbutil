@@ -47,7 +47,7 @@ public class AdbBackend {
         while (timeoutMs > 0L) {
             try {
                 IDevice[] devicesTp = this.bridge.getDevices();
-                IDevice[] devices = deviceId != null ? (IDevice[]) Arrays.stream(devicesTp).filter(device -> device.getSerialNumber().contains(deviceId)).toArray() : devicesTp;
+                IDevice[] devices = deviceId != null ? Arrays.stream(devicesTp).filter(device -> device.getSerialNumber().contains(deviceId)).toArray(IDevice[]::new) : devicesTp;
                 if (devices != null && devices.length > 0) {
                     return devices;
                 }
