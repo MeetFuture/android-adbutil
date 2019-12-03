@@ -5,6 +5,8 @@ import com.android.ddmlib.IDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+
 /**
  * 获取设备
  */
@@ -34,15 +36,20 @@ public class AdbBackend {
 
 
     public IDevice[] getDevice() {
-        return this.getDevice(60000L);
+        return this.getDevice(60000L, null);
     }
 
-    public IDevice[] getDevice(long timeoutMs) {
+    public IDevice[] getDevice(String deviceId) {
+        return this.getDevice(60000L, deviceId);
+    }
+
+    public IDevice[] getDevice(long timeoutMs, String deviceId) {
         while (timeoutMs > 0L) {
             try {
-                IDevice[] device = this.bridge.getDevices();
-                if (device != null && device.length > 0) {
-                    return device;
+                IDevice[] devicesTp = this.bridge.getDevices();
+                IDevice[] devices = deviceId != null ? (IDevice[]) Arrays.stream(devicesTp).filter(device -> device.getSerialNumber().contains(deviceId)).toArray() : devicesTp;
+                if (devices != null && devices.length > 0) {
+                    return devices;
                 }
             } catch (Exception e) {
                 this.logger.error("Error getDevices", e);
